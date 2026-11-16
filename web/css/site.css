@@ -324,3 +324,20 @@ a.desc:after {
 [data-bs-theme="dark"] .extension-card:hover {
     box-shadow: 0 0 0 1px var(--bs-border-color), 0 8px 24px rgba(0, 0, 0, .4) !important;
 }
+
+
+/* Làm nổi bật ô tìm kiếm (filter) trong GridView */
+.grid-view .filters input, 
+.grid-view .filters select {
+    background-color: #2b3035 !important;
+    color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.grid-view .filters input:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}

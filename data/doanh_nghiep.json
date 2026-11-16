@@ -1,0 +1,34 @@
+[
+  {
+    "ma_so_doanh_nghiep": "0316888888",
+    "ten_doanh_nghiep": "Công ty TNHH Công nghệ GIS Cầu Ông Lành",
+    "ten_viet_tat": "GIS Cầu Ông Lành Co., Ltd",
+    "trang_thai_doanh_nghiep": "Đang hoạt động",
+    "loai_hinh_doanh_nghiep": "Công ty TNHH một thành viên",
+    "ngay_thanh_lap": "2026-01-15",
+    "noi_cap": "Sở Kế hoạch và Đầu tư TP. Hồ Chí Minh",
+    "dia_chi_day_du_tru_so_chinh": "123 Bến Vân Đồn, Phường 6, Thành phố Hồ Chí Minh",
+    "nganh_nghe_chinh": "Lập trình máy tính",
+    "von_dieu_le": 5000000000,
+    "dai_dien_phap_luat": "Nguyễn Văn A",
+    "so_luong_lao_dong": 25,
+    "toa_do_x": 106.701234,
+    "toa_do_y": 10.765432
+  },
+  {
+    "ma_so_doanh_nghiep": "0316999999",
+    "ten_doanh_nghiep": "Công ty CP Giải pháp Không gian Số",
+    "ten_viet_tat": "Digital Space JSC",
+    "trang_thai_doanh_nghiep": "Đang hoạt động",
+    "loai_hinh_doanh_nghiep": "Công ty cổ phần",
+    "ngay_thanh_lap": "2026-02-20",
+    "noi_cap": "Sở Kế hoạch và Đầu tư TP. Hồ Chí Minh",
+    "dia_chi_day_du_tru_so_chinh": "456 Hoàng Diệu, Phường 6, Thành phố Hồ Chí Minh",
+    "nganh_nghe_chinh": "Hoạt động dịch vụ công nghệ thông tin",
+    "von_dieu_le": 10000000000,
+    "dai_dien_phap_luat": "Trần Thị B",
+    "so_luong_lao_dong": 40,
+    "toa_do_x": 106.703456,
+    "toa_do_y": 10.763210
+  }
+]

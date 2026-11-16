@@ -9,7 +9,7 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
 NavBar::begin([
-    'brandLabel' => 'Web GIS Cầu Ông Lành', // Đổi tên ứng dụng cho chuyên nghiệp
+    'brandLabel' => 'Web GIS Cầu Ông Lãnh', // Đổi tên ứng dụng cho chuyên nghiệp
     'brandUrl' => Yii::$app->homeUrl,
     'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
 ]);

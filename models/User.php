@@ -1,56 +1,72 @@
 <?php
 
-declare(strict_types=1);
-
 namespace app\models;
 
-use yii\base\BaseObject;
+use Yii;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\behaviors\TimestampBehavior;
 
-class User extends BaseObject implements IdentityInterface
+/**
+ * This is the model class for table "user".
+ *
+ * @property int $id
+ * @property string $username
+ * @property string $auth_key
+ * @property string $password_hash
+ * @property string $email
+ * @property int $status
+ * @property int|null $created_at
+ * @property int|null $updated_at
+ */
+class User extends ActiveRecord implements IdentityInterface
 {
-    public int|string $id = '';
-    public string $username = '';
-    public string $passwordHash = '';
-    public string $authKey = '';
-    public string $accessToken = '';
-    private static array $_users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            // password: admin
-            'passwordHash' => '$2y$13$gYAywKSkhfZDq9FLNdm7buKnvlRxDexf5xipSMAxQPDUxpaptmZJu',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            // password: demo
-            'passwordHash' => '$2y$13$alRLq1PGVMlGYwS/Y3iy3ewQns1Z8ol8Iq6Zb5k7ZwEhblA1aL29y',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id): static|null
+    public static function tableName()
     {
-        return isset(self::$_users[$id]) ? new static(self::$_users[$id]) : null;
+        return '{{%user}}'; 
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null): static|null
+    public function behaviors()
     {
-        foreach (self::$_users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
+        return [
+            TimestampBehavior::class,
+        ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'email'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
+            [['username'], 'unique'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne(['id' => $id, 'status' => 1]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
         return null;
     }
 
@@ -60,21 +76,15 @@ class User extends BaseObject implements IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername(string $username): static|null
+    public static function findByUsername($username)
     {
-        foreach (self::$_users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['username' => $username, 'status' => 1]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getId(): int|string
+    public function getId()
     {
         return $this->id;
     }
@@ -82,16 +92,45 @@ class User extends BaseObject implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey(): string|null
+    public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
+    }
+
+    public function setAuthKey($value)
+    {
+        $this->auth_key = $value;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey): bool
+    public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->getAuthKey() === $authKey;
+    }
+
+    /**
+     * Hỗ trợ thuộc tính ảo passwordHash (camelCase) trỏ về password_hash trong database
+     */
+    public function getPasswordHash()
+    {
+        return $this->password_hash;
+    }
+
+    public function setPasswordHash($value)
+    {
+        $this->password_hash = $value;
+    }
+
+    /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return bool if password provided is valid for current user
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 }

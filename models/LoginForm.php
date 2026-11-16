@@ -12,7 +12,7 @@ use yii\base\Security;
  * LoginForm is the model behind the login form.
  *
  * @property-read User|null $user
- *
+ */
 class LoginForm extends Model
 {
     public string $username = '';
@@ -20,6 +20,7 @@ class LoginForm extends Model
     public bool $rememberMe = true;
     private User|null $_user = null;
     private bool $_userLoaded = false;
+
     public function __construct(private readonly Security $security, $config = [])
     {
         parent::__construct($config);
@@ -45,7 +46,7 @@ class LoginForm extends Model
      * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @param array|null $params the additional name-value pairs given in the rule
      */
     public function validatePassword(string $attribute, array|null $params): void
     {
@@ -53,7 +54,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$this->security->validatePassword($this->password, $user->passwordHash)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Tài khoản hoặc mật khẩu không chính xác.');
             }
         }
     }
@@ -65,6 +66,7 @@ class LoginForm extends Model
     public function login(): bool
     {
         if ($this->validate()) {
+            // Sửa lại phép tính thời gian rememberMe (3600 giây * 24 giờ * 30 ngày)
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
 

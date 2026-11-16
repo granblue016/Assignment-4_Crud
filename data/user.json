@@ -1,0 +1,14 @@
+[
+  {
+    "username": "admin",
+    "email": "admin@cauonglanh.gis.vn",
+    "password": "admin123",
+    "status": 1
+  },
+  {
+    "username": "staff",
+    "email": "staff@cauonglanh.gis.vn",
+    "password": "staff123",
+    "status": 1
+  }
+]

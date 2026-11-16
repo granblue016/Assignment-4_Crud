@@ -10,76 +10,41 @@ use yii\widgets\ActiveForm;
 
 <div class="doanh-nghiep-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['class' => 'text-light']
+    ]); ?>
 
-    <?= $form->field($model, 'ma_so_doanh_nghiep')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($model, 'ma_so_doanh_nghiep')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'ten_doanh_nghiep')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'ten_viet_tat')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'ten_tieng_nuoc_ngoai')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'trang_thai_doanh_nghiep')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'loai_hinh_doanh_nghiep')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+        </div>
 
-    <?= $form->field($model, 'ten_doanh_nghiep')->textInput(['maxlength' => true]) ?>
+        <div class="col-md-6">
+            <?= $form->field($model, 'ngay_thanh_lap')->textInput(['type' => 'date', 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'noi_cap')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'dai_dien_phap_luat')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'von_dieu_le')->textInput(['type' => 'number', 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'so_luong_lao_dong')->textInput(['type' => 'number', 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'nganh_nghe_chinh')->textInput(['maxlength' => true, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'ten_viet_tat')->textInput(['maxlength' => true]) ?>
+    <!-- Các trường dài để riêng 1 dòng bên dưới -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <?= $form->field($model, 'dia_chi_day_du_tru_so_chinh')->textarea(['rows' => 2, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+            <?= $form->field($model, 'mo_ta_nganh_nghe_kinh_doanh')->textarea(['rows' => 3, 'class' => 'form-control bg-dark text-light border-secondary']) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'ten_tieng_nuoc_ngoai')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'trang_thai_doanh_nghiep')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'loai_hinh_doanh_nghiep')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ngay_thanh_lap')->textInput() ?>
-
-    <?= $form->field($model, 'noi_cap')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'so_nha')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ten_duong')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'phuong_xa')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'thanh_pho')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'dia_chi_day_du_tru_so_chinh')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ma_nganh_nghe_kinh_doanh')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ten_nganh_nghe_kinh_doanh')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nganh_nghe_chinh')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'mo_ta_nganh_nghe_kinh_doanh')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'von_dieu_le')->textInput() ?>
-
-    <?= $form->field($model, 'danh_sach_thanh_vien_gop_von')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'dai_dien_phap_luat')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nam_thanh_lap_doanh_nghiep')->textInput() ?>
-
-    <?= $form->field($model, 'tinh_trang_hoat_dong')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'dang_ky_lan_dau')->textInput() ?>
-
-    <?= $form->field($model, 'cac_lan_dang_ky_thay_doi')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'chung_chi_hanh_nghe')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'dia_chi_thong_bao_thue')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'so_luong_lao_dong')->textInput() ?>
-
-    <?= $form->field($model, 'loai_thue_phai_nop')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'tinh_trang_nguoi_nop_thue')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'thong_tin_vi_pham_ve_thue')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'toa_do_x')->textInput() ?>
-
-    <?= $form->field($model, 'toa_do_y')->textInput() ?>
-
-    <?= $form->field($model, 'geom')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <div class="form-group mt-4 pt-2 border-top border-secondary">
+        <?= Html::submitButton('<i class="bi bi-save"></i> Lưu thay đổi', ['class' => 'btn btn-success btn-lg me-2']) ?>
+        <?= Html::a('Quay lại', ['view', 'id' => $model->id], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

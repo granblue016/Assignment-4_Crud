@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\DoanhNghiep $model */
 
-$this->title = 'Create Doanh Nghiep';
-$this->params['breadcrumbs'][] = ['label' => 'Doanh Nghieps', 'url' => ['index']];
+$this->title = 'Tạo Doanh Nghiệp';
+$this->params['breadcrumbs'][] = ['label' => 'Quản lý Doanh Nghiệp', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="doanh-nghiep-create">

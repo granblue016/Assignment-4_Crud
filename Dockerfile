@@ -14,8 +14,12 @@ WORKDIR /var/www/html
 # Copy toàn bộ mã nguồn lên server
 COPY . /var/www/html/
 
-# Chạy composer install để tự động tạo thư mục vendor trên cloud
+# Chạy composer install để tạo thư mục vendor
 RUN composer install --no-dev --optimize-autoloader
+
+# [QUAN TRỌNG] Tạo và phân quyền ghi cho các thư mục assets và runtime của Yii2
+RUN mkdir -p /var/www/html/web/assets /var/www/html/runtime \
+    && chmod -R 777 /var/www/html/web/assets /var/www/html/runtime
 
 # Trỏ Apache DocumentRoot vào thư mục web của Yii2
 RUN sed -i 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/000-default.conf

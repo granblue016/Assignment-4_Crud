@@ -17,11 +17,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- Tiêu đề trang và Nút thêm mới -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 bg-white p-4 rounded-4 shadow-sm border">
-        <div>
-            <h1 class="h3 fw-bold text-dark mb-1">
-                <i class="fa-solid fa-building text-primary me-2"></i><?= Html::encode($this->title) ?>
-            </h1>
-            <p class="text-secondary small mb-0">Danh sách các doanh nghiệp đang hoạt động trên địa bàn khu vực Cầu Ông Lành</p>
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background-color: #0284c7; border-radius: 50%; flex-shrink: 0;">
+                <i class="fa-solid fa-building fa-xl"></i>
+            </div>
+            <div>
+                <h1 class="h3 fw-bold text-dark mb-1">
+                    <?= Html::encode($this->title) ?>
+                </h1>
+                <p class="text-secondary small mb-0">Danh sách các doanh nghiệp đang hoạt động trên địa bàn khu vực Cầu Ông Lãnh</p>
+            </div>
         </div>
         <div>
             <?= Html::a('<i class="fa-solid fa-plus me-1"></i> Thêm doanh nghiệp mới', ['create'], ['class' => 'btn btn-primary rounded-pill shadow-sm px-4 py-2']) ?>
@@ -64,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'loai_hinh_doanh_nghiep',
                         'headerOptions' => ['class' => 'text-white'],
                         'format' => 'raw',
-                        'value' => function($model) {
-                            return '<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">' 
+                        'value' => function ($model) {
+                            return '<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">'
                                 . Html::encode($model->loai_hinh_doanh_nghiep) . '</span>';
                         }
                     ],
@@ -83,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions' => ['class' => 'text-white'],
                         'contentOptions' => ['class' => 'text-light'],
                     ],
-                    
+
                     // Cột thao tác
                     [
                         'class' => 'yii\grid\ActionColumn',

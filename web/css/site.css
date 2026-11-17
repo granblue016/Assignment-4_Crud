@@ -1,16 +1,176 @@
+/* =========================================================
+   1. TỔNG THỂ & NỀN TRANG (LIGHT & PROFESSIONAL THEME)
+   ========================================================= */
+body {
+    background-color: #f4f7fb !important;
+    color: #1e293b !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
 main > .container {
-    padding: 70px 15px 20px;
+    padding: 80px 15px 30px;
     display: flex;
     flex-direction: column;
     min-height: 100%;
 }
 
-.not-set {
-    color: var(--bs-danger);
-    font-style: italic;
+/* =========================================================
+   2. THANH ĐIỀU HƯỚNG (NAVBAR) & FOOTER -> TRẮNG SÁNG
+   ========================================================= */
+.navbar, .navbar-dark, .bg-dark, footer {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
 }
 
-/* Thêm mũi tên sắp xếp cho GridView */
+footer {
+    border-top: 1px solid #e2e8f0 !important;
+    border-bottom: none !important;
+}
+
+.navbar-brand, .navbar-nav .nav-link, .nav li > form > button.logout {
+    color: #1e293b !important;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover, 
+.navbar-nav .nav-link.active,
+.nav li > form > button.logout:hover {
+    color: #0284c7 !important; /* Xanh info đậm */
+}
+
+/* =========================================================
+   3. DỌN SẠCH MÀU ĐEN Ở CARD, HEADER TRANG VIEW & BẢNG CHI TIẾT
+   ========================================================= */
+.card, .card-header, .card-body, .card-footer {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+}
+
+.card {
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+    border-radius: 12px !important;
+}
+
+.card-header {
+    background-color: #f0f9ff !important; /* Nền xanh info cực nhạt */
+    border-bottom: 1px solid #bae6fd !important;
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+}
+
+/* Sửa khối Header tối màu ở trang Chi tiết (view.php) */
+.bg-dark.text-white, .p-4.bg-dark, .rounded-3.bg-dark, [class*="bg-dark"] {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* =========================================================
+   4. BẢNG DỮ LIỆU (GRIDVIEW & DETAILVIEW) -> TRẮNG SẠCH, HOVER NHẸ
+   ========================================================= */
+.table, .table-dark, .detail-view {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+    --bs-table-bg: #ffffff !important;
+    --bs-table-color: #1e293b !important;
+    --bs-table-hover-bg: #f0f9ff !important;
+    --bs-table-hover-color: #0f172a !important;
+    --bs-table-striped-bg: #f8fafc !important;
+    --bs-table-striped-color: #1e293b !important;
+}
+
+/* Tiêu đề cột (th) */
+.table thead th, 
+.table-dark thead th,
+.detail-view th {
+    background-color: #f0f9ff !important; /* Xanh info nhạt */
+    color: #0369a1 !important; /* Chữ xanh dương đậm */
+    border-bottom: 2px solid #bae6fd !important;
+    font-weight: 700 !important;
+    white-space: nowrap;
+}
+
+/* Dòng chứa ô tìm kiếm (filters) đang bị đen xì */
+.grid-view thead tr.filters,
+.grid-view thead tr.filters td,
+.grid-view thead tr.filters th,
+.table-dark thead tr.filters td {
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Các ô dữ liệu (td) */
+.table tbody td, 
+.table-dark tbody td,
+.detail-view td {
+    background-color: #ffffff !important;
+    color: #1e293b !important; /* Chữ đen xám đậm rõ nét */
+    border-color: #e2e8f0 !important;
+    vertical-align: middle;
+}
+
+/* Hiệu ứng rê chuột (Hover) -> Xanh info siêu nhẹ, KHÔNG còn đen */
+.table-hover tbody tr:hover,
+.table-hover tbody tr:hover > td,
+.table-hover tbody tr:hover > th,
+.table-dark.table-hover tbody tr:hover > td {
+    background-color: #e0f2fe !important;
+    color: #0f172a !important;
+}
+
+/* =========================================================
+   5. XỬ LÝ TRIỆT ĐỂ CHỮ MỜ (TRẮNG XÁM) -> CHỮ ĐEN DỄ ĐỌC
+   ========================================================= */
+.text-white, .text-light {
+    color: #0f172a !important;
+}
+
+/* Giữ lại chữ trắng duy nhất cho các nút bấm nền màu (Primary, Danger, Info, Success) */
+.btn-primary, .btn-danger, .btn-success, .btn-info, .badge.bg-info, .badge.bg-primary {
+    color: #ffffff !important;
+}
+
+/* Dòng "Trình bày 1-2 trong số 2 mục" và các dòng phụ chú bị chìm */
+.summary, .text-muted, .text-secondary, .hint-block, p.text-muted, small {
+    color: #334155 !important; /* Màu xám đen đậm, đọc cực kỳ rõ trên nền trắng */
+    font-weight: 500;
+}
+
+/* =========================================================
+   6. FORM NHẬP LIỆU & NHÃN (LABEL)
+   ========================================================= */
+.form-control, .form-select,
+.grid-view .filters input, 
+.grid-view .filters select {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.form-control:focus, .form-select:focus,
+.grid-view .filters input:focus, 
+.grid-view .filters select:focus {
+    border-color: #0ea5e9 !important;
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.2) !important;
+    outline: none;
+}
+
+.form-label, h5, h6 {
+    color: #0284c7 !important; /* Xanh info chuyên nghiệp */
+    font-weight: 700 !important;
+}
+
+h1, h2, h3, h4 {
+    color: #0f172a !important;
+}
+
+/* Mũi tên sắp xếp GridView */
 a.asc:after, a.desc:after {
     content: '';
     left: 3px;
@@ -19,122 +179,99 @@ a.asc:after, a.desc:after {
     height: 0;
     border: solid 5px transparent;
     margin: 4px 4px 2px 4px;
-    background: transparent;
+}
+a.asc:after { border-bottom: solid 7px #0369a1; border-top-width: 0; }
+a.desc:after { border-top: solid 7px #0369a1; border-bottom-width: 0; }
+
+/* Nút Quay lại danh sách ở trang View */
+.btn-outline-light {
+    color: #334155 !important;
+    border-color: #cbd5e1 !important;
+    background-color: #ffffff !important;
+}
+.btn-outline-light:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
 }
 
-a.asc:after {
-    border-bottom: solid 7px var(--bs-body-color);
-    border-top-width: 0;
+/* =========================================================
+   7. CẬP NHẬT CHỮ FOOTER SANG MÀU ĐEN RÕ NÉT
+   ========================================================= */
+footer, 
+footer *, 
+footer .text-muted, 
+footer .text-white, 
+footer .text-white-50, 
+footer .text-light {
+    color: #0f172a !important;
+    font-weight: 500;
 }
 
-a.desc:after {
-    border-top: solid 7px var(--bs-body-color);
-    border-bottom-width: 0;
+footer a:hover {
+    color: #0284c7 !important; /* Xanh info khi rê chuột vào link ở footer */
 }
 
-.grid-view th {
-    white-space: nowrap;
+/* =========================================================
+   8. BỎ IN ĐẬM CHO TÊN DOANH NGHIỆP & TÊN CHỦ HỘ TRONG BẢNG
+   ========================================================= */
+.table tbody td,
+.table tbody td strong,
+.table tbody td b,
+.table tbody td .fw-bold,
+.table tbody td .font-weight-bold {
+    font-weight: 400 !important;
 }
 
-.hint-block {
-    display: block;
-    margin-top: 5px;
-    color: var(--bs-secondary-color);
+/* =========================================================
+   ĐIỀU CHỈNH NHÃN TRẠNG THÁI "ĐANG HOẠT ĐỘNG" ĐẬM HƠN MỘT CHÚT
+   ========================================================= */
+
+/* 1. Module Doanh nghiệp: Xanh dương đậm vừa, rõ nét */
+[class*="doanh-nghiep"] .badge,
+.card:has(.fa-building) .badge,
+.card:has(.fa-industry) .badge {
+    background-color: #bae6fd !important; /* Xanh dương đậm hơn một bậc so với e0f2fe */
+    color: #0369a1 !important;            /* Chữ xanh dương đậm sắc nét */
+    border: 1px solid #7dd3fc !important; /* Viền nổi bật hơn */
+    font-weight: 600 !important;
+    padding: 5px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
 }
 
-.error-summary {
-    color: var(--bs-danger-text-emphasis);
-    background: var(--bs-danger-bg-subtle);
-    border-left: 3px solid var(--bs-danger-border-subtle);
-    padding: 10px 20px;
-    margin: 0 0 15px 0;
+/* 2. Module Hộ kinh doanh: Xanh lá đậm vừa, rõ nét */
+[class*="ho-kinh-doanh"] .badge,
+.card:has(.fa-store) .badge,
+.card:has(.fa-shop) .badge {
+    background-color: #a7f3d0 !important; /* Xanh lá đậm hơn một bậc so với d1fae5 */
+    color: #047857 !important;            /* Chữ xanh lá đậm rõ nét */
+    border: 1px solid #6ee7b7 !important; /* Viền nổi bật hơn */
+    font-weight: 600 !important;
+    padding: 5px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
 }
 
-/* Căn chỉnh thanh menu Navbar */
-.navbar > .container,
-.navbar > .container-fluid {
-    align-items: baseline;
+/* =========================================================
+   LÀM RÕ CHỮ GỢI Ý (PLACEHOLDER) TRONG CÁC Ô NHẬP LIỆU & TEXTAREA
+   ========================================================= */
+.form-control::placeholder, 
+.form-select::placeholder,
+textarea::placeholder,
+input::placeholder {
+    color: #94a3b8 !important; /* Xám sáng hơn, tạo cảm giác chữ gợi ý tinh tế */
+    opacity: 0.8 !important;    /* Làm mờ nhẹ đi để phân biệt rõ với dữ liệu thật */
 }
 
-.nav li > form > button.logout {
-    color: var(--bs-navbar-color);
+/* =========================================================
+   XỬ LÝ MÀU NỀN KHI TRÌNH DUYỆT TỰ ĐỘNG ĐIỀN (AUTOFILL)
+   ========================================================= */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover, 
+.form-control:-webkit-autofill:focus, 
+.form-control:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #ffffff inset !important; /* Ép nền trắng */
+    -webkit-text-fill-color: #0f172a !important;            /* Ép chữ đen rõ nét */
+    transition: background-color 5000s ease-in-out 0s;
 }
 
-@media (max-width: 767.98px) {
-    .navbar-nav .nav-link.logout {
-        display: block;
-        text-align: left;
-        width: 100%;
-        padding: 10px 0;
-    }
-}
-
-.navbar-nav .nav-link.logout:focus,
-.navbar-nav .nav-link.logout:hover {
-    color: var(--bs-navbar-hover-color);
-}
-
-/* Layout chung cho các trang */
-.site-login,
-.site-contact,
-.site-index,
-.site-error,
-.site-about,
-.site-contact-success {
-    flex: 1;
-}
-
-/* Tùy chỉnh ô tìm kiếm (filter input/select) trong GridView chuẩn (Light Mode) */
-.grid-view .filters input, 
-.grid-view .filters select {
-    background-color: #f8f9fa !important;
-    color: #212529 !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 0.875rem;
-}
-
-.grid-view .filters input:focus,
-.grid-view .filters select:focus {
-    border-color: #0d6efd !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-    background-color: #fff !important;
-    outline: none;
-}
-
-/* Tinh chỉnh hiển thị cho bảng nền tối (table-dark) */
-.table-dark, 
-.table-dark th, 
-.table-dark td {
-    color: #adb5bd !important;
-}
-
-.table-dark .text-muted,
-.table-dark p {
-    color: #adb5bd !important;
-}
-
-.table-dark thead th a {
-    color: #adb5bd !important;
-    text-decoration: none;
-}
-
-.table-dark .filters input, 
-.table-dark .filters select {
-    background-color: #2b3035 !important;
-    color: #ffffff !important;
-    border: 1px solid #6c757d !important;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 0.875rem;
-}
-
-/* Chuyển toàn bộ nhãn (label) và tiêu đề nhóm trong form sang màu trắng */
-.doanh-nghiep-create h1 {
-    color: #212529 !important;
-}
-.doanh-nghiep-form .form-label,
-.doanh-nghiep-form h6 {
-    color: #ffffff !important;
-}

@@ -132,8 +132,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td class="text-light"><?= Html::encode($model->chu_ho_dia_chi_thuong_tru ?: 'Chưa cập nhật') ?></td>
                         </tr>
                         <tr>
-                            <th class="text-secondary">Tên bảng hiệu:</th>
-                            <td class="text-info fw-semibold"><?= Html::encode($model->bang_hieu ?: 'Chưa cập nhật') ?></td>
+                            <th class="text-secondary">Ngành nghề chính:</th>
+                            <td class="text-info fw-semibold"><?= Html::encode($model->nganh_nghe_chinh ?? $model->ten_nganh_nghe_kinh_doanh ?: 'Chưa cập nhật') ?></td>
                         </tr>
                         <tr>
                             <th class="text-secondary">Trạng thái hoạt động:</th>
@@ -189,7 +189,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="mb-2">
                         <span class="text-secondary small fw-bold text-uppercase d-block mb-1">Ngành nghề chính:</span>
-                        <p class="text-info fw-semibold mb-2"><?= Html::encode($model->nganh_nghe_chinh ?: 'Chưa cập nhật') ?></p>
+                        <p class="text-info fw-semibold mb-2"><?= Html::encode($model->nganh_nghe_chinh ?? $model->ten_nganh_nghe_kinh_doanh ?? 'Chưa cập nhật') ?></p>
                     </div>
                     <div>
                         <span class="text-secondary small fw-bold text-uppercase d-block mb-1">Mô tả chi tiết ngành nghề:</span>
@@ -310,6 +310,8 @@ $viewLat = !empty($model->lat) ? (float)$model->lat : 10.7654;
 $viewLng = !empty($model->lng) ? (float)$model->lng : 106.6952;
 $hasViewCoord = (!empty($model->lat) && !empty($model->lng)) ? 'true' : 'false';
 
+$nganhNghieHienThi = $model->nganh_nghe_chinh ?? $model->ten_nganh_nghe_kinh_doanh ?? '---';
+
 $this->registerJs("
     // 1. Khởi tạo bản đồ xem chi tiết ở cuối trang
     let viewLat = $viewLat;
@@ -324,7 +326,7 @@ $this->registerJs("
 
     if (hasViewCoord) {
         L.marker([viewLat, viewLng]).addTo(viewMap)
-          .bindPopup('<b>Chủ hộ: " . Html::encode($model->chu_ho_ho_va_ten) . "</b><br>Bảng hiệu: " . Html::encode($model->bang_hieu ?: '---') . "').openPopup();
+          .bindPopup('<b>Chủ hộ: " . Html::encode($model->chu_ho_ho_va_ten) . "</b><br>Ngành nghề: " . Html::encode($nganhNghieHienThi) . "').openPopup();
     }
 
     setTimeout(function() {

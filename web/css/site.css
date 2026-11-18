@@ -275,3 +275,20 @@ input::placeholder {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+.pagination .page-link {
+    background-color: #ffffff !important;
+    color: #334155 !important;
+    border-color: #dee2e6 !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+.pagination .active .page-link {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border-color: #0d6efd !important;
+}
+

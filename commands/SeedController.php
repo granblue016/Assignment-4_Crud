@@ -302,9 +302,7 @@ class SeedController extends Controller
             );
         }
 
-        return $errorCount > 0 || $unmappedFields
-            ? self::EXIT_CODE_ERROR
-            : self::EXIT_CODE_NORMAL;
+        return $errorCount > 0 ? self::EXIT_CODE_ERROR : self::EXIT_CODE_NORMAL;
     }
 
 

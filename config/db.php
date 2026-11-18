@@ -24,7 +24,6 @@ $ensureNeonEndpoint = function ($dsn) {
     }
 
     $endpointId = explode('.', $host, 2)[0];
-    $endpointId = preg_replace('/-pooler$/i', '', $endpointId);
     if (!preg_match('/^ep-[a-z0-9-]+$/i', $endpointId)) {
         throw new \InvalidArgumentException('Không thể suy ra endpoint ID từ hostname Neon.');
     }
@@ -37,7 +36,14 @@ $ensureNeonEndpoint = function ($dsn) {
 
         $optionsFound = true;
         $options = rawurldecode(substr($part, strlen('options=')));
-        if (!preg_match('/(?:^|\s)endpoint=/i', $options)) {
+        $options = preg_replace(
+            '/(^|\s)endpoint=[^\s]+/i',
+            '${1}endpoint=' . $endpointId,
+            $options,
+            1,
+            $endpointOptionCount
+        );
+        if ($endpointOptionCount === 0) {
             $options = 'endpoint=' . $endpointId . ($options !== '' ? ' ' . $options : '');
         }
         $part = 'options=' . $options;

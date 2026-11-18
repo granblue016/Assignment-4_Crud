@@ -61,7 +61,7 @@ class HoKinhDoanh extends \yii\db\ActiveRecord
     }
 
     /**
-     * Tự động trích xuất tọa độ X (Kinh độ) và Y (Vĩ độ) từ cột geom của PostGIS khi query
+     * Tự động trích xuất tọa độ X (Kinh độ) và Y (Vĩ độ) từ cột geom của PostGIS khi query[cite: 15]
      */
     public static function find()
     {
@@ -94,17 +94,36 @@ class HoKinhDoanh extends \yii\db\ActiveRecord
     }
 
     /**
-     * Tự động đóng gói lat, lng thành đối tượng hình học Point của PostGIS trước khi lưu
+     * Tự động đồng bộ song song lat/lng với toa_do_x/toa_do_y và sinh chuẩn geom trước khi lưu
      */
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
+            // Đồng bộ qua lại giữa thuộc tính ảo (lat/lng) và cột trong cơ sở dữ liệu (toa_do_x/toa_do_y)
+            if (!empty($this->lng)) {
+                $this->toa_do_x = $this->lng;
+            } elseif (!empty($this->toa_do_x)) {
+                $this->lng = $this->toa_do_x;
+            }
+
+            if (!empty($this->lat)) {
+                $this->toa_do_y = $this->lat;
+            } elseif (!empty($this->toa_do_y)) {
+                $this->lat = $this->toa_do_y;
+            }
+
+            // Sinh dữ liệu không gian geom chuẩn PostGIS (SRID 4326)
             if (!empty($this->lat) && !empty($this->lng)) {
                 $this->geom = new Expression("ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)", [
                     ':lng' => $this->lng,
                     ':lat' => $this->lat,
                 ]);
+            } else {
+                $this->geom = null;
+                $this->toa_do_x = null;
+                $this->toa_do_y = null;
             }
+
             return true;
         }
         return false;
@@ -143,8 +162,8 @@ class HoKinhDoanh extends \yii\db\ActiveRecord
             'chu_ho_dia_chi_thuong_tru' => 'Địa chỉ thường trú',
             'trang_thai_hoat_dong' => 'Trạng thái hoạt động',
             'bang_hieu' => 'Bảng hiệu',
-            'toa_do_x' => 'Tọa độ X',
-            'toa_do_y' => 'Tọa độ Y',
+            'toa_do_x' => 'Tọa độ X (Kinh độ)',
+            'toa_do_y' => 'Tọa độ Y (Vĩ độ)',
             'geom' => 'Geom',
         ];
     }

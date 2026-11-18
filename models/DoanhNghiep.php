@@ -58,13 +58,12 @@ class DoanhNghiep extends \yii\db\ActiveRecord
     }
 
     /**
-     * Tự động trích xuất tọa độ X (Kinh độ) và Y (Vĩ độ) từ cột geom của PostGIS khi query
+     * Tự động trích xuất tọa độ X (Kinh độ) và Y (Vĩ độ) từ cột geom của PostGIS khi query[cite: 15]
      */
     public static function find()
     {
         return parent::find()->addSelect([
             '*',
-            // Nếu geom có thì lấy từ geom, nếu null thì lấy từ toa_do_x / toa_do_y
             'lng' => 'COALESCE(ST_X(geom), toa_do_x)',
             'lat' => 'COALESCE(ST_Y(geom), toa_do_y)',
         ]);
@@ -91,7 +90,7 @@ class DoanhNghiep extends \yii\db\ActiveRecord
     }
 
     /**
-     * Tự động đóng gói lat, lng thành đối tượng hình học Point của PostGIS trước khi lưu
+     * Tự động đóng gói lat, lng thành đối tượng hình học Point của PostGIS trước khi lưu[cite: 15]
      */
     public function beforeSave($insert)
     {
@@ -106,6 +105,11 @@ class DoanhNghiep extends \yii\db\ActiveRecord
                     ':lng' => $this->lng,
                     ':lat' => $this->lat,
                 ]);
+            } else {
+                // Xử lý khi người dùng xóa trắng tọa độ
+                $this->toa_do_x = null;
+                $this->toa_do_y = null;
+                $this->geom = null;
             }
             return true;
         }
@@ -134,10 +138,12 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             'so_nha' => 'Số nhà',
             'ten_duong' => 'Tên đường',
             'phuong_xa' => 'Phường / Xã',
-            'quan_huyen' => 'Quận / Huyện',
-            'tinh_thanh' => 'Tỉnh / Thành phố',
+            'thanh_pho' => 'Tỉnh / Thành phố',
             'dia_chi_day_du_tru_so_chinh' => 'Địa chỉ trụ sở chính',
             'mo_ta_nganh_nghe_kinh_doanh' => 'Mô tả ngành nghề kinh doanh',
+            'toa_do_x' => 'Tọa độ X (Kinh độ)',
+            'toa_do_y' => 'Tọa độ Y (Vĩ độ)',
+            'geom' => 'Dữ liệu không gian (Geom)',
         ];
     }
 }

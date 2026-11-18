@@ -27,7 +27,7 @@ use yii\bootstrap5\ActiveForm;
                         <i class="fa-solid fa-id-card me-2"></i> Thông tin định danh & Tên doanh nghiệp
                     </h6>
                 </div>
-                
+
                 <div class="col-md-6">
                     <?= $form->field($model, 'ma_so_doanh_nghiep')->textInput([
                         'maxlength' => true,
@@ -188,31 +188,67 @@ use yii\bootstrap5\ActiveForm;
                         'placeholder' => 'Nhập địa chỉ đầy đủ trụ sở chính...'
                     ])->label('Địa chỉ đầy đủ trụ sở chính') ?>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <?= $form->field($model, 'toa_do_x')->textInput(['placeholder' => 'Kinh độ X...'])->label('Tọa độ X (Kinh độ)') ?>
+            <!-- ========================================================= -->
+            <!-- KHU VỰC BẢN ĐỒ & NHẬP TỌA ĐỘ TRỰC TIẾP                      -->
+            <!-- ========================================================= -->
+            <div class="card border border-secondary shadow-sm rounded-4 mt-4 bg-dark text-white">
+                <div class="card-header bg-secondary bg-opacity-25 py-3 border-bottom border-secondary">
+                    <h5 class="m-0 fw-bold text-info">
+                        <i class="fa-solid fa-map-location-dot me-2"></i> Xác định vị trí không gian (Nhập tay hoặc Chọn trên bản đồ)
+                    </h5>
                 </div>
-                <div class="col-md-4">
-                    <?= $form->field($model, 'toa_do_y')->textInput(['placeholder' => 'Vĩ độ Y...'])->label('Tọa độ Y (Vĩ độ)') ?>
-                </div>
-                <div class="col-md-4">
-                    <?= $form->field($model, 'geom')->textInput(['placeholder' => 'Dữ liệu không gian geom...'])->label('Dữ liệu không gian (Geom)') ?>
+                <div class="card-body">
+                    <p class="text-light opacity-75 small mb-3">
+                        Bạn có thể <b>nhập trực tiếp tọa độ</b> vào các ô bên dưới hoặc <b>click/kéo thả marker</b> trên bản đồ. Bản đồ và dữ liệu không gian sẽ tự động đồng bộ.
+                    </p>
+
+                    <!-- Khung hiển thị bản đồ Leaflet -->
+                    <div id="map-picker" style="height: 400px; width: 100%; border-radius: 8px; border: 1px solid #475569;" class="mb-3"></div>
+
+                    <!-- Các ô input cho phép nhập trực tiếp và đồng bộ 2 chiều với bản đồ -->
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <?= $form->field($model, 'lng')->textInput([
+                                'id' => 'input-lng',
+                                'type' => 'number',
+                                'step' => 'any',
+                                'placeholder' => 'Nhập kinh độ (VD: 106.701234)...'
+                            ])->label('Kinh độ (X / Longitude)') ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= $form->field($model, 'lat')->textInput([
+                                'id' => 'input-lat',
+                                'type' => 'number',
+                                'step' => 'any',
+                                'placeholder' => 'Nhập vĩ độ (VD: 10.765432)...'
+                            ])->label('Vĩ độ (Y / Latitude)') ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= $form->field($model, 'geom')->textInput([
+                                'id' => 'input-geom',
+                                'readonly' => true,
+                                'placeholder' => 'Tự động sinh POINT(lng lat)...'
+                            ])->label('Dữ liệu không gian (Geom)') ?>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Thanh nút bấm hành động -->
             <div class="form-group mt-4 pt-3 border-top border-secondary d-flex flex-wrap gap-2">
                 <?= Html::submitButton(
-                    $model->isNewRecord 
-                        ? '<i class="fa-solid fa-plus me-1"></i> Tạo mới doanh nghiệp' 
-                        : '<i class="fa-solid fa-floppy-disk me-1"></i> Lưu thay đổi', 
+                    $model->isNewRecord
+                        ? '<i class="fa-solid fa-plus me-1"></i> Tạo mới doanh nghiệp'
+                        : '<i class="fa-solid fa-floppy-disk me-1"></i> Lưu thay đổi',
                     ['class' => 'btn btn-success rounded-pill px-4 shadow-sm']
                 ) ?>
-                
+
                 <?= Html::a(
-                    '<i class="fa-solid fa-arrow-left me-1"></i> Quay lại', 
-                    $model->isNewRecord ? ['index'] : ['view', 'id' => $model->id], 
-                    ['class' => 'btn btn-outline-secondary rounded-pill px-4']
+                    '<i class="fa-solid fa-arrow-left me-1"></i> Quay lại',
+                    $model->isNewRecord ? ['index'] : ['view', 'id' => $model->id],
+                    ['class' => 'btn btn-outline-light rounded-pill px-4']
                 ) ?>
             </div>
 
@@ -220,3 +256,101 @@ use yii\bootstrap5\ActiveForm;
         </div>
     </div>
 </div>
+
+<?php
+// Đăng ký thư viện Leaflet CSS & JS qua CDN
+$this->registerCssFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+$this->registerJsFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+
+// Lấy tọa độ mặc định hoặc tọa độ sẵn có từ model (Trường hợp Update)
+$defaultLat = !empty($model->lat) ? (float)$model->lat : 10.7654;
+$defaultLng = !empty($model->lng) ? (float)$model->lng : 106.6952;
+$hasCoord = (!empty($model->lat) && !empty($model->lng)) ? 'true' : 'false';
+
+$this->registerJs("
+    let initialLat = $defaultLat;
+    let initialLng = $defaultLng;
+    let hasCoord = $hasCoord;
+
+    // Khởi tạo bản đồ Leaflet tại khung #map-picker (Tâm mặc định Cầu Ông Lành, TP.HCM)
+    let map = L.map('map-picker').setView([initialLat, initialLng], hasCoord ? 17 : 15);
+
+    // Thêm lớp bản đồ nền OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+
+    // Nếu bản ghi đã có tọa độ từ trước (Trường hợp Update), cắm sẵn Marker & đồng bộ WKT
+    if (hasCoord) {
+        marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+        setupMarkerEvents(marker);
+        updateGeomString(initialLat, initialLng);
+    }
+
+    // 1. TƯƠNG TÁC TỪ BẢN ĐỒ -> CẬP NHẬT INPUT
+    map.on('click', function(e) {
+        let lat = parseFloat(e.latlng.lat.toFixed(6));
+        let lng = parseFloat(e.latlng.lng.toFixed(6));
+
+        $('#input-lat').val(lat);
+        $('#input-lng').val(lng);
+        updateGeomString(lat, lng);
+
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+            setupMarkerEvents(marker);
+        }
+    });
+
+    // Hàm cập nhật chuỗi WKT cho cột geom
+    function updateGeomString(lat, lng) {
+        if (!isNaN(lat) && !isNaN(lng)) {
+            $('#input-geom').val('POINT(' + lng + ' ' + lat + ')');
+        } else {
+            $('#input-geom').val('');
+        }
+    }
+
+    // Lắng nghe sự kiện kéo thả (drag) marker
+    function setupMarkerEvents(m) {
+        m.on('dragend', function(event) {
+            let position = event.target.getLatLng();
+            let lat = parseFloat(position.lat.toFixed(6));
+            let lng = parseFloat(position.lng.toFixed(6));
+
+            $('#input-lat').val(lat);
+            $('#input-lng').val(lng);
+            updateGeomString(lat, lng);
+        });
+    }
+
+    // 2. TƯƠNG TÁC TỪ INPUT NHẬP TAY -> DI CHUYỂN BẢN ĐỒ & MARKER
+    $('#input-lat, #input-lng').on('input change', function() {
+        let lat = parseFloat($('#input-lat').val());
+        let lng = parseFloat($('#input-lng').val());
+
+        if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+            updateGeomString(lat, lng);
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                setupMarkerEvents(marker);
+            }
+
+            map.setView([lat, lng], Math.max(map.getZoom(), 16));
+        }
+    });
+
+    // Fix lỗi hiển thị tile bản đồ khi load trang
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 200);
+");
+?>

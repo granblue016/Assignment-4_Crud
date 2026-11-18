@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "tbl_doanh_nghiep".
@@ -44,7 +45,9 @@ use Yii;
  */
 class DoanhNghiep extends \yii\db\ActiveRecord
 {
-
+    // Thêm 2 thuộc tính ảo để binding với bản đồ Leaflet
+    public $lat;
+    public $lng;
 
     /**
      * {@inheritdoc}
@@ -52,6 +55,19 @@ class DoanhNghiep extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'tbl_doanh_nghiep';
+    }
+
+    /**
+     * Tự động trích xuất tọa độ X (Kinh độ) và Y (Vĩ độ) từ cột geom của PostGIS khi query
+     */
+    public static function find()
+    {
+        return parent::find()->addSelect([
+            '*',
+            // Nếu geom có thì lấy từ geom, nếu null thì lấy từ toa_do_x / toa_do_y
+            'lng' => 'COALESCE(ST_X(geom), toa_do_x)',
+            'lat' => 'COALESCE(ST_Y(geom), toa_do_y)',
+        ]);
     }
 
     /**
@@ -64,7 +80,7 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             [['ma_so_doanh_nghiep', 'ten_doanh_nghiep'], 'required'],
             [['ngay_thanh_lap', 'dang_ky_lan_dau'], 'safe'],
             [['mo_ta_nganh_nghe_kinh_doanh', 'danh_sach_thanh_vien_gop_von', 'cac_lan_dang_ky_thay_doi', 'chung_chi_hanh_nghe', 'dia_chi_thong_bao_thue', 'thong_tin_vi_pham_ve_thue', 'geom'], 'string'],
-            [['von_dieu_le', 'toa_do_x', 'toa_do_y'], 'number'],
+            [['von_dieu_le', 'toa_do_x', 'toa_do_y', 'lat', 'lng'], 'number'],
             [['nam_thanh_lap_doanh_nghiep', 'so_luong_lao_dong'], 'default', 'value' => null],
             [['nam_thanh_lap_doanh_nghiep', 'so_luong_lao_dong'], 'integer'],
             [['ma_so_doanh_nghiep', 'so_nha', 'ma_nganh_nghe_kinh_doanh'], 'string', 'max' => 50],
@@ -72,6 +88,28 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             [['ten_viet_tat', 'trang_thai_doanh_nghiep', 'loai_hinh_doanh_nghiep', 'phuong_xa', 'thanh_pho', 'tinh_trang_hoat_dong', 'loai_thue_phai_nop', 'tinh_trang_nguoi_nop_thue'], 'string', 'max' => 100],
             [['ma_so_doanh_nghiep'], 'unique'],
         ];
+    }
+
+    /**
+     * Tự động đóng gói lat, lng thành đối tượng hình học Point của PostGIS trước khi lưu
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if (!empty($this->lat) && !empty($this->lng)) {
+                // Lưu song song tọa độ vào 2 cột numeric
+                $this->toa_do_x = $this->lng;
+                $this->toa_do_y = $this->lat;
+
+                // Đóng gói thành kiểu geometry Point của PostGIS (SRID 4326)
+                $this->geom = new Expression("ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)", [
+                    ':lng' => $this->lng,
+                    ':lat' => $this->lat,
+                ]);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -102,5 +140,4 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             'mo_ta_nganh_nghe_kinh_doanh' => 'Mô tả ngành nghề kinh doanh',
         ];
     }
-
 }

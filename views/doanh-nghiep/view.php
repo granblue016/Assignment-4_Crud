@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var app\models\DoanhNghiep $model */
@@ -8,6 +9,7 @@ use yii\helpers\Html;
 $this->title = $model->ten_doanh_nghiep;
 $this->params['breadcrumbs'][] = ['label' => 'Quản lý Doanh nghiệp', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
 ?>
 <div class="doanh-nghiep-view">
 
@@ -29,20 +31,23 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="d-flex gap-2">
             <?= Html::a('<i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật', ['update', 'id' => $model->id], ['class' => 'btn btn-primary rounded-pill px-4 shadow-sm']) ?>
-            <?= Html::a('<i class="fa-solid fa-trash me-1"></i> Xóa', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-outline-danger rounded-pill px-4',
-                'data' => [
-                    'confirm' => 'Bạn có chắc chắn muốn xóa doanh nghiệp này không?',
-                    'method' => 'post',
-                ],
-            ]) ?>
+
+            <!-- Nút Xóa gọi Bootstrap 5 Modal kèm bản đồ -->
+            <button type="button" class="btn btn-outline-danger rounded-pill px-4 btn-delete-modal shadow-sm"
+                data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"
+                data-name="<?= Html::encode($model->ten_doanh_nghiep) ?>"
+                data-lat="<?= $model->lat ?>"
+                data-lng="<?= $model->lng ?>">
+                <i class="fa-solid fa-trash me-1"></i> Xóa
+            </button>
+
             <?= Html::a('<i class="fa-solid fa-arrow-left me-1"></i> Danh sách', ['index'], ['class' => 'btn btn-outline-secondary rounded-pill px-4']) ?>
         </div>
     </div>
 
     <!-- Bố cục hiển thị chi tiết chia thành các Card song song -->
     <div class="row g-4">
-        
+
         <!-- Cột trái: Thông tin định danh -->
         <div class="col-md-6">
             <div class="card h-100 shadow-sm border-0 rounded-4 bg-dark text-white">
@@ -189,12 +194,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <!-- Hàng dưới: Địa chỉ Trụ sở & Tọa độ GIS -->
+        <!-- Hàng dưới: Địa chỉ Trụ sở & Tọa độ GIS kèm Bản đồ hiển thị trực quan -->
         <div class="col-12">
             <div class="card shadow-sm border-0 rounded-4 bg-dark text-white">
                 <div class="card-header bg-dark border-bottom border-secondary py-3">
                     <h6 class="fw-bold mb-0 text-uppercase" style="color: #e879f9 !important;">
-                        <i class="fa-solid fa-map-location-dot me-2"></i> Địa chỉ Trụ sở chính & Tọa độ GIS
+                        <i class="fa-solid fa-map-location-dot me-2"></i> Địa chỉ Trụ sở chính & Vị trí không gian GIS
                     </h6>
                 </div>
                 <div class="card-body">
@@ -224,30 +229,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <hr class="border-secondary">
 
-                    <div class="mb-3">
-                        <span class="text-secondary small fw-bold text-uppercase d-block mb-1">Ngành nghề chính:</span>
-                        <p class="text-info fw-semibold mb-2"><?= Html::encode($model->nganh_nghe_chinh ?: 'Chưa cập nhật') ?></p>
-                    </div>
-                    <div class="mb-3">
-                        <span class="text-secondary small fw-bold text-uppercase d-block mb-1">Mô tả chi tiết ngành nghề:</span>
-                        <p class="text-light mb-0 small"><?= Html::encode($model->mo_ta_nganh_nghe_kinh_doanh ?: 'Không có mô tả bổ sung.') ?></p>
-                    </div>
-
-                    <hr class="border-secondary">
-
-                    <div class="row">
+                    <div class="row mb-4">
                         <div class="col-md-4">
-                            <span class="text-secondary small fw-bold">Tọa độ X (Kinh độ):</span>
-                            <span class="text-info fw-semibold"><?= Html::encode($model->toa_do_x ?: 'Chưa xác định') ?></span>
+                            <span class="text-secondary small fw-bold">Kinh độ (X / Longitude):</span>
+                            <span class="text-info fw-semibold"><?= Html::encode($model->lng ?: 'Chưa xác định') ?></span>
                         </div>
                         <div class="col-md-4">
-                            <span class="text-secondary small fw-bold">Tọa độ Y (Vĩ độ):</span>
-                            <span class="text-info fw-semibold"><?= Html::encode($model->toa_do_y ?: 'Chưa xác định') ?></span>
+                            <span class="text-secondary small fw-bold">Vĩ độ (Y / Latitude):</span>
+                            <span class="text-info fw-semibold"><?= Html::encode($model->lat ?: 'Chưa xác định') ?></span>
                         </div>
                         <div class="col-md-4">
                             <span class="text-secondary small fw-bold">Dữ liệu không gian (Geom):</span>
                             <span class="text-light small font-monospace"><?= Html::encode($model->geom ?: 'Chưa có') ?></span>
                         </div>
+                    </div>
+
+                    <!-- Khung bản đồ Leaflet xem vị trí doanh nghiệp -->
+                    <div class="mt-3">
+                        <span class="text-secondary small fw-bold text-uppercase d-block mb-2">Bản đồ vị trí doanh nghiệp trên địa bàn:</span>
+                        <div id="view-map" style="height: 380px; width: 100%; border-radius: 8px; border: 1px solid #475569;"></div>
                     </div>
                 </div>
             </div>
@@ -256,3 +256,123 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 </div>
+
+<!-- ========================================================= -->
+<!-- BOOTSTRAP 5 DELETE CONFIRMATION MODAL + LEAFLET MINI MAP    -->
+<!-- ========================================================= -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: #ffffff !important; color: #212529 !important;">
+
+            <!-- Header dùng inline style ép màu trắng và chữ đỏ, loại bỏ hoàn toàn ảnh hưởng của file CSS ngoài -->
+            <div class="modal-header px-4 py-3 border-bottom" style="background-color: #ffffff !important;">
+                <h5 class="modal-title fw-bold d-flex align-items-center" id="deleteModalLabel" style="color: #dc3545 !important;">
+                    <i class="fa-solid fa-triangle-exclamation me-2 fs-4" style="color: #dc3545 !important;"></i> Xác nhận xóa dữ liệu
+                </h5>
+                <button type="button" class="btn p-0 border-0 bg-transparent text-dark fw-bold fs-4 lh-1 shadow-none ms-auto" data-bs-dismiss="modal" aria-label="Close" style="color: #000 !important; opacity: 0.8; line-height: 1;">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Body modal -->
+            <div class="modal-body p-4" style="background-color: #ffffff !important;">
+                <p class="text-secondary mb-3">Bạn có chắc chắn muốn xóa vĩnh viễn doanh nghiệp này khỏi hệ thống không?</p>
+
+                <div class="alert alert-light border border-secondary border-opacity-25 p-3 rounded-3 mb-3 text-dark shadow-sm" style="background-color: #f8f9fa !important;">
+                    <i class="fa-solid fa-building-circle-xmark text-danger me-2"></i>
+                    <strong id="delete-item-name"></strong>
+                </div>
+
+                <label class="form-label small fw-bold text-muted mb-1">Xác nhận vị trí trước khi xóa:</label>
+                <div id="delete-preview-map" style="height: 220px; width: 100%; border-radius: 8px; border: 1px solid #cbd5e1;"></div>
+            </div>
+
+            <!-- Footer modal -->
+            <div class="modal-footer border-top px-4 py-3" style="background-color: #f8f9fa !important;">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                <form id="deleteForm" method="POST" style="display:inline;">
+                    <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm">
+                        <i class="fa-solid fa-trash me-1"></i> Xác nhận xóa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+// Đăng ký thư viện Leaflet CSS & JS qua CDN
+$this->registerCssFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+$this->registerJsFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+
+$viewLat = !empty($model->lat) ? (float)$model->lat : 10.7654;
+$viewLng = !empty($model->lng) ? (float)$model->lng : 106.6952;
+$hasViewCoord = (!empty($model->lat) && !empty($model->lng)) ? 'true' : 'false';
+
+$this->registerJs("
+    // 1. Khởi tạo bản đồ xem chi tiết ở cuối trang
+    let viewLat = $viewLat;
+    let viewLng = $viewLng;
+    let hasViewCoord = $hasViewCoord;
+
+    let viewMap = L.map('view-map').setView([viewLat, viewLng], hasViewCoord ? 17 : 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(viewMap);
+
+    if (hasViewCoord) {
+        L.marker([viewLat, viewLng]).addTo(viewMap)
+          .bindPopup('<b>" . Html::encode($model->ten_doanh_nghiep) . "</b><br>Trụ sở chính').openPopup();
+    }
+
+    setTimeout(function() {
+        viewMap.invalidateSize();
+    }, 200);
+
+    // 2. Xử lý Modal Xóa kèm bản đồ mini
+    let deleteMap = null;
+    let deleteMarker = null;
+
+    $('.btn-delete-modal').on('click', function(e) {
+        e.preventDefault();
+        let url = $(this).data('url');
+        let name = $(this).data('name');
+        let lat = parseFloat($(this).data('lat'));
+        let lng = parseFloat($(this).data('lng'));
+
+        $('#deleteForm').attr('action', url);
+        $('#delete-item-name').text(name);
+
+        let myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        myModal.show();
+
+        $('#deleteConfirmModal').on('shown.bs.modal', function () {
+            if (!deleteMap) {
+                deleteMap = L.map('delete-preview-map').setView([10.7654, 106.6952], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(deleteMap);
+            } else {
+                deleteMap.invalidateSize();
+            }
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                deleteMap.setView([lat, lng], 16);
+                if (deleteMarker) {
+                    deleteMarker.setLatLng([lat, lng]);
+                } else {
+                    deleteMarker = L.marker([lat, lng]).addTo(deleteMap);
+                }
+            } else {
+                deleteMap.setView([10.7654, 106.6952], 15);
+                if (deleteMarker) {
+                    deleteMarker.removeLayer(deleteMarker);
+                    deleteMarker = null;
+                }
+            }
+        });
+    });
+");
+?>

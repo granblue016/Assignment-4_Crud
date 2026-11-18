@@ -264,10 +264,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: #ffffff !important; color: #212529 !important;">
 
-            <!-- Header dùng inline style ép màu trắng và chữ đỏ, loại bỏ hoàn toàn ảnh hưởng của file CSS ngoài -->
-            <div class="modal-header px-4 py-3 border-bottom" style="background-color: #ffffff !important;">
-                <h5 class="modal-title fw-bold d-flex align-items-center" id="deleteModalLabel" style="color: #dc3545 !important;">
-                    <i class="fa-solid fa-triangle-exclamation me-2 fs-4" style="color: #dc3545 !important;"></i> Xác nhận xóa dữ liệu
+            <!-- Header nền trắng, chữ đỏ đậm dễ nhìn -->
+            <div class="modal-header px-4 py-3 border-bottom d-flex justify-content-between align-items-center" style="background-color: #ffffff !important;">
+                <h5 class="modal-title fw-bold text-danger d-flex align-items-center m-0" id="deleteModalLabel" style="color: #dc3545 !important;">
+                    <i class="fa-solid fa-triangle-exclamation me-2 fs-4" style="color: #dc3545 !important;"></i> 
+                    <span>Xác nhận xóa dữ liệu</span>
                 </h5>
                 <button type="button" class="btn p-0 border-0 bg-transparent text-dark fw-bold fs-4 lh-1 shadow-none ms-auto" data-bs-dismiss="modal" aria-label="Close" style="color: #000 !important; opacity: 0.8; line-height: 1;">
                     &times;

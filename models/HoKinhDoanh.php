@@ -67,8 +67,8 @@ class HoKinhDoanh extends \yii\db\ActiveRecord
     {
         return parent::find()->addSelect([
             '*',
-            'lng' => 'ST_X(geom)',
-            'lat' => 'ST_Y(geom)',
+            'lng' => 'COALESCE(ST_X(geom), toa_do_x)',
+            'lat' => 'COALESCE(ST_Y(geom), toa_do_y)',
         ]);
     }
 

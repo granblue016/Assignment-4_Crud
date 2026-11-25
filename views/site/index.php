@@ -15,9 +15,9 @@ $this->title = 'Trang chủ - Web GIS Cầu Ông Lãnh';
         <!-- Trang giới thiệu chung cho người chưa đăng nhập -->
         <div class="p-5 mb-4 bg-white rounded-4 shadow-sm border">
             <div class="container-fluid py-3">
-                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill mb-3">
+                <!-- <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill mb-3">
                     Cổng giới thiệu hệ thống
-                </span>
+                </span> -->
                 <h1 class="display-5 fw-bold text-primary">
                     <i class="fa-solid fa-map-location-dot me-2"></i>Web GIS Cầu Ông Lãnh
                 </h1>

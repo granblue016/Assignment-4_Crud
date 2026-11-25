@@ -78,7 +78,9 @@ class SiteController extends Controller
      */
     public function actionIndex(): string
     {
-        return $this->render('index');
+        return $this->render('index', [
+            'isGuest' => Yii::$app->user->isGuest,
+        ]);
     }
 
     /**

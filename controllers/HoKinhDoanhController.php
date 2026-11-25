@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\HoKinhDoanh;
 use app\models\HoKinhDoanhSearch;
+use app\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * HoKinhDoanhController implements the CRUD actions for HoKinhDoanh model.
@@ -18,17 +21,34 @@ class HoKinhDoanhController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update'],
+                        'roles' => ['@'], // Chỉ cho phép người dùng đã đăng nhập
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['@'],
+                        'matchCallback' => static function ($rule, $action) {
+                            $identity = Yii::$app->user->identity;
+                            return $identity instanceof User && $identity->isAdmin();
+                        },
                     ],
                 ],
-            ]
-        );
+            ],
+
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**

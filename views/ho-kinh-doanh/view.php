@@ -1,10 +1,14 @@
 <?php
 
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var app\models\HoKinhDoanh $model */
+
+$currentUser = Yii::$app->user->identity;
+$isAdmin = $currentUser instanceof User && $currentUser->isAdmin();
 
 $this->title = $model->chu_ho_ho_va_ten;
 $this->params['breadcrumbs'][] = ['label' => 'Quản lý Hộ kinh doanh', 'url' => ['index']];
@@ -32,14 +36,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="d-flex gap-2">
             <?= Html::a('<i class="fa-solid fa-pen-to-square me-1"></i> Cập nhật', ['update', 'id' => $model->id], ['class' => 'btn btn-primary rounded-pill px-4 shadow-sm']) ?>
 
-            <!-- Nút Xóa gọi Bootstrap 5 Modal kèm bản đồ mini -->
-            <button type="button" class="btn btn-outline-danger rounded-pill px-4 btn-delete-modal shadow-sm"
-                data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"
-                data-name="Hộ kinh doanh: <?= Html::encode($model->chu_ho_ho_va_ten) ?> (Mã: <?= Html::encode($model->ma_so_ho_kinh_doanh) ?>)"
-                data-lat="<?= $model->lat ?>"
-                data-lng="<?= $model->lng ?>">
-                <i class="fa-solid fa-trash me-1"></i> Xóa
-            </button>
+            <?php if ($isAdmin): ?>
+                <!-- Nút Xóa gọi Bootstrap 5 Modal kèm bản đồ mini -->
+                <button type="button" class="btn btn-outline-danger rounded-pill px-4 btn-delete-modal shadow-sm"
+                    data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"
+                    data-name="Hộ kinh doanh: <?= Html::encode($model->chu_ho_ho_va_ten) ?> (Mã: <?= Html::encode($model->ma_so_ho_kinh_doanh) ?>)"
+                    data-lat="<?= $model->lat ?>"
+                    data-lng="<?= $model->lng ?>">
+                    <i class="fa-solid fa-trash me-1"></i> Xóa
+                </button>
+            <?php endif; ?>
 
             <?= Html::a('<i class="fa-solid fa-arrow-left me-1"></i> Danh sách', ['index'], ['class' => 'btn btn-outline-secondary rounded-pill px-4']) ?>
         </div>
@@ -370,7 +376,7 @@ $this->registerJs("
             } else {
                 deleteMap.setView([10.7654, 106.6952], 15);
                 if (deleteMarker) {
-                    deleteMarker.removeLayer(deleteMarker);
+                    deleteMap.removeLayer(deleteMarker);
                     deleteMarker = null;
                 }
             }

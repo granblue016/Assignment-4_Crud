@@ -15,18 +15,22 @@ use yii\behaviors\TimestampBehavior;
  * @property string $auth_key
  * @property string $password_hash
  * @property string $email
+ * @property string $role
  * @property int $status
  * @property int|null $created_at
  * @property int|null $updated_at
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public const ROLE_STAFF = 'staff';
+    public const ROLE_ADMIN = 'admin';
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%user}}'; 
+        return '{{%user}}';
     }
 
     /**
@@ -46,12 +50,25 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['role'], 'default', 'value' => self::ROLE_STAFF],
+            [['role'], 'string', 'max' => 32],
+            [['role'], 'in', 'range' => [self::ROLE_STAFF, self::ROLE_ADMIN]],
             [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === self::ROLE_STAFF;
     }
 
     /**

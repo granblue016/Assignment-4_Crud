@@ -1,6 +1,7 @@
 <?php
 
 use app\models\HoKinhDoanh;
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -9,6 +10,9 @@ use yii\grid\GridView;
 /** @var yii\web\View $this */
 /** @var app\models\HoKinhDoanhSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+
+$currentUser = Yii::$app->user->identity;
+$isAdmin = $currentUser instanceof User && $currentUser->isAdmin();
 
 $this->title = 'Quản lý Hộ kinh doanh';
 $this->params['breadcrumbs'][] = $this->title;
@@ -92,7 +96,7 @@ $this->registerJsFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', ['depen
                                 'header' => 'Thao tác',
                                 'headerOptions' => ['class' => 'text-center'],
                                 'contentOptions' => ['class' => 'text-center text-nowrap', 'style' => 'width: 140px;'],
-                                'template' => '{view} {update} {delete}',
+                                'template' => $isAdmin ? '{view} {update} {delete}' : '{view} {update}',
                                 'buttons' => [
                                     'view' => function ($url, $model) {
                                         return Html::a('<i class="fa-solid fa-eye"></i>', ['view', 'id' => $model->id], [
@@ -106,7 +110,10 @@ $this->registerJsFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', ['depen
                                             'title' => 'Chỉnh sửa',
                                         ]);
                                     },
-                                    'delete' => function ($url, $model) {
+                                    'delete' => function ($url, $model) use ($isAdmin) {
+                                        if (!$isAdmin) {
+                                            return '';
+                                        }
                                         return Html::a('<i class="fa-solid fa-trash"></i>', '#', [
                                             'class' => 'btn btn-sm btn-outline-danger rounded-circle btn-delete-modal',
                                             'title' => 'Xóa',
@@ -250,5 +257,5 @@ $this->registerJs("
             }
         }
     });
-");
+    ");
 ?>

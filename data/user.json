@@ -1,14 +1,30 @@
 [
   {
     "username": "admin",
-    "email": "admin@cauonglanh.gis.vn",
-    "password": "admin123",
+    "email": "admin@gis.vn",
+    "password": "Admin@123456",
+    "role": "admin",
     "status": 1
   },
   {
     "username": "staff",
-    "email": "staff@cauonglanh.gis.vn",
-    "password": "staff123",
+    "email": "staff@gis.vn",
+    "password": "Staff@123456",
+    "role": "staff",
+    "status": 1
+  },
+  {
+    "username": "staff2",
+    "email": "staff2@gis.vn",
+    "password": "Staff2@123456",
+    "role": "staff",
+    "status": 1
+  },
+  {
+    "username": "nhanvien_q1",
+    "email": "nhanvien.q1@gis.vn",
+    "password": "NhanVien@123456",
+    "role": "staff",
     "status": 1
   }
 ]

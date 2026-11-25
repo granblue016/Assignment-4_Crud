@@ -1,6 +1,7 @@
 <?php
 
 use app\models\DoanhNghiep;
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -9,6 +10,9 @@ use yii\grid\GridView;
 /** @var yii\web\View $this */
 /** @var app\models\DoanhNghiepSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+
+$currentUser = Yii::$app->user->identity;
+$isAdmin = $currentUser instanceof User && $currentUser->isAdmin();
 
 $this->title = 'Quản lý Doanh nghiệp';
 $this->params['breadcrumbs'][] = $this->title;
@@ -95,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => 'Thao tác',
                         'headerOptions' => ['class' => 'text-white text-center'],
                         'contentOptions' => ['class' => 'text-center text-nowrap', 'style' => 'width: 140px;'],
-                        'template' => '{view} {update} {delete}',
+                        'template' => $isAdmin ? '{view} {update} {delete}' : '{view} {update}',
                         'buttons' => [
                             'view' => function ($url, $model) {
                                 return Html::a('<i class="fa-solid fa-eye"></i>', ['view', 'id' => $model->id], [
@@ -109,11 +113,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'title' => 'Chỉnh sửa',
                                 ]);
                             },
-                            'delete' => function ($url, $model) {
+                            'delete' => function ($url, $model) use ($isAdmin) {
+                                if (!$isAdmin) {
+                                    return '';
+                                }
                                 return Html::a('<i class="fa-solid fa-trash"></i>', '#', [
                                     'class' => 'btn btn-sm btn-outline-danger rounded-circle btn-delete-modal ms-1',
                                     'data-url' => Url::to(['delete', 'id' => $model->id]),
-                                    'data-name' => isset($model->ten_doanh_nghiep) ? $model->ten_doanh_nghiep : ('Hộ kinh doanh: ' . $model->chu_ho_ho_va_ten . ' (Mã: ' . $model->ma_so_ho_kinh_doanh . ')'),
+                                    'data-name' => $model->ten_doanh_nghiep ?: ('Doanh nghiệp (Mã: ' . $model->ma_so_doanh_nghiep . ')'),
                                     'data-lat' => $model->lat,
                                     'data-lng' => $model->lng,
                                     'title' => 'Xóa',
@@ -227,7 +234,5 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     });
-");
-    ?>
-
-</div>
+    ");
+?>

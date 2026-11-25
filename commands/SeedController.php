@@ -124,8 +124,10 @@ class SeedController extends Controller
                         continue;
                     }
                     $value = $item[$key];
-                    if ($value !== null && $value !== ''
-                        && !(is_string($value) && strtoupper(trim($value)) === 'NULL')) {
+                    if (
+                        $value !== null && $value !== ''
+                        && !(is_string($value) && strtoupper(trim($value)) === 'NULL')
+                    ) {
                         return $value;
                     }
                 }
@@ -264,9 +266,11 @@ class SeedController extends Controller
                 }
                 $candidateLng = (float)$pair[0];
                 $candidateLat = (float)$pair[1];
-                if (is_finite($candidateLng) && is_finite($candidateLat)
+                if (
+                    is_finite($candidateLng) && is_finite($candidateLat)
                     && $candidateLng >= -180 && $candidateLng <= 180
-                    && $candidateLat >= -90 && $candidateLat <= 90) {
+                    && $candidateLat >= -90 && $candidateLat <= 90
+                ) {
                     $lng = $candidateLng;
                     $lat = $candidateLat;
                     break;
@@ -297,7 +301,7 @@ class SeedController extends Controller
         if ($unmappedFields) {
             $this->stdout(
                 "Các trường GeoJSON chưa có cột tương ứng trong bảng: "
-                . implode(', ', array_keys($unmappedFields)) . "\n",
+                    . implode(', ', array_keys($unmappedFields)) . "\n",
                 Console::FG_YELLOW
             );
         }
@@ -323,10 +327,18 @@ class SeedController extends Controller
         }
 
         $jsonContent = file_get_contents($filePath);
-        $data = json_decode($jsonContent, true);
+        if ($jsonContent === false) {
+            $this->stdout("Lỗi: Không thể đọc file JSON: {$filePath}\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
 
-        if (empty($data)) {
-            $this->stdout("Lỗi: File JSON trống hoặc định dạng không hợp lệ!\n", Console::FG_RED);
+        $data = json_decode($jsonContent, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->stdout("Lỗi: JSON không hợp lệ: " . json_last_error_msg() . "\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
+        if (!is_array($data) || !$data) {
+            $this->stdout("Lỗi: File JSON không có bản ghi user.\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
         }
 
@@ -334,8 +346,16 @@ class SeedController extends Controller
         $errorCount = 0;
 
         foreach ($data as $item) {
+            if (!is_array($item)) {
+                $errorCount++;
+                $this->stdout("Lỗi: Bản ghi user không đúng định dạng object.\n", Console::FG_YELLOW);
+                continue;
+            }
+
             $username = $item['username'] ?? null;
             if (empty($username)) {
+                $errorCount++;
+                $this->stdout("Lỗi: Bản ghi user thiếu username.\n", Console::FG_YELLOW);
                 continue;
             }
 
@@ -351,6 +371,13 @@ class SeedController extends Controller
             $model->email = !empty($item['email']) ? $item['email'] : ($username . '@gis.vn');
             $model->status = $item['status'] ?? 1;
 
+            // Gán role theo JSON, mặc định admin nếu username là 'admin', ngược lại là staff
+            if (!empty($item['role'])) {
+                $model->role = $item['role'];
+            } elseif ($model->isNewRecord || empty($model->role)) {
+                $model->role = ($username === 'admin') ? User::ROLE_ADMIN : User::ROLE_STAFF;
+            }
+
             // Xử lý mật khẩu
             if (!empty($item['password'])) {
                 $model->password_hash = Yii::$app->security->generatePasswordHash($item['password']);
@@ -361,7 +388,7 @@ class SeedController extends Controller
 
             if ($model->save()) {
                 $successCount++;
-                $this->stdout("Đã seed thành công tài khoản: {$model->username}\n", Console::FG_GREEN);
+                $this->stdout("Đã seed thành công tài khoản: {$model->username} (role: {$model->role})\n", Console::FG_GREEN);
             } else {
                 $errorCount++;
                 // In chi tiết lỗi validate của Model ra console để dễ debug
@@ -377,7 +404,7 @@ class SeedController extends Controller
         }
         $this->stdout("\n", Console::FG_CYAN);
 
-        return self::EXIT_CODE_NORMAL;
+        return $errorCount > 0 ? self::EXIT_CODE_ERROR : self::EXIT_CODE_NORMAL;
     }
 
     /**

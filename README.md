@@ -128,17 +128,20 @@ CONFIGURATION
 
 ## Database
 
-Edit the file `config/db.php` with real data, for example:
+The database connection can be configured with the `DATABASE_URL` environment
+variable. For Neon PostgreSQL, set the connection string in PowerShell (do not
+commit it to source control), then migrate and seed users:
 
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
+```powershell
+$env:DATABASE_URL = 'postgresql://<USER>:<PASSWORD>@<HOST>/<DATABASE>?sslmode=require&channel_binding=require'
+php yii migrate/up
+php yii seed/user
 ```
+
+Run `migrate/up` first to add the `role` column and ensure the `user.id` sequence
+generates new IDs. `seed/user` creates or updates users from `data/user.json`. If
+the connection string has been exposed, rotate its password in Neon before using
+it again.
 
 **NOTES:**
 - Yii won't create the database for you, this has to be done manually before you can access it.
